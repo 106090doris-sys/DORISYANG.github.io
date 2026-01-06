@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>你的台北約會行程是什麼樣子？</title>
+    <style>
+    :root {
+      --primary-color: #ff9a8b;
+      --bg-color: #fff7f2;
+      --text-color: #5a4a42;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 450px;
+      padding: 30px;
+      background: var(--card-bg);
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(255, 154, 139, 0.1);
+      animation: slideUp 0.8s ease-out;
+    }
+
+    h1 {
+      font-family: 'ZCOOL KuaiLe', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 30px;
+      color: #b5a499;
+      letter-spacing: 1px;
+    }
+
+    /* 題目切換動畫 */
+    .question-box {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .question-box h2 {
+      font-size: 1.15rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      border-left: 4px solid var(--primary-color);
+      padding-left: 12px;
+    }
+
+    button.option {
+      width: 100%;
+      border: 2px solid transparent;
+      background: #fdfdfd;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-radius: 18px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text-color);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    }
+
+    button.option:hover {
+      background: #fff0eb;
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    button.option:active {
+      transform: scale(0.98);
+    }
+
+    .result {
+      display: none;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .result h2 {
+      font-family: 'ZCOOL KuaiLe', cursive;
+      font-size: 1.6rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .result p {
+      line-height: 1.8;
+      font-size: 1.05rem;
+      background: #fff9f6;
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .hint {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #ff9a8b;
+      font-weight: bold;
+    }
+
+    /* 動畫效果 */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 進度條 */
+    .progress-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🌷 一日約會心理測驗</h1>
+  <div class="subtitle">跟著直覺，發現你的理想約會</div>
+  <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+  
+  <div id="quiz"></div>
+  <div id="result" class="result"></div>
+</div>
+
+<script>
+// (這裡保留你原本的數據邏輯，並微調渲染結構)
+const questions = [
+  { q: "起床後第一個念頭是？", options: [
+    ["想找一家好吃又舒服的餐廳坐著", "A"],
+    ["今天好像很適合動一動", "B"],
+    ["想去個令人充滿好奇心的地方", "C"],
+    ["想慢慢走看看城市", "D"]
+  ]},
+  { q: "如果有人陪你一整天，你希望？", options: [
+    ["可以一直聊天", "A"],
+    ["可以一起做很多事", "B"],
+    ["不說話也不尷尬", "C"],
+    ["走到哪算哪", "D"]
+  ]},
+  { q: "哪一種畫面讓你覺得很幸福？", options: [
+    ["陽光、街道、咖啡", "A"],
+    ["一起嘗試新活動", "B"],
+    ["可愛的生物或自然", "C"],
+    ["老城市的懷舊氛圍", "D"]
+  ]},
+  { q: "你的假日步調比較像？", options: [
+    ["慢慢來", "A"],
+    ["有動有靜", "B"],
+    ["隨性就好", "C"],
+    ["邊走邊感受", "D"]
+  ]},
+  { q: "一天結束時，你最想留下的是？", options: [
+    ["一段好聊的回憶", "A"],
+    ["一起完成的事情", "B"],
+    ["很單純的快樂", "C"],
+    ["一種暖暖的感覺", "D"]
+  ]}
+];
+
+const results = {
+  A: { title: "🧁 慢慢聊天小幸福型", text: "你喜歡舒服的節奏，邊走邊聊、邊吃邊笑。<br>只要身邊的人對了，什麼都剛剛好。", hint: "推薦：找間採光好的咖啡廳坐一個下午。" },
+  B: { title: "🍦 一起動起來開心型", text: "對你來說，幸福是一起完成事情。<br>動起來的回憶，會留很久。", hint: "推薦：去手作工作坊或體驗新的運動。" },
+  C: { title: "🐣 純粹療癒快樂型", text: "你很容易因為小事感到開心。<br>越簡單的陪伴，越珍貴。", hint: "推薦：去貓咪咖啡廳或去公園餵鴿子。" },
+  D: { title: "🧺 城市溫柔散步型", text: "你喜歡有故事的地方，也喜歡慢慢感受生活。<br>和你走在一起，會不自覺放慢腳步。", hint: "推薦：去老街散步或逛逛獨立書店。" }
+};
+
+let current = 0;
+let score = {A:0, B:0, C:0, D:0};
+const quizEl = document.getElementById("quiz");
+const resultEl = document.getElementById("result");
+const progressEl = document.getElementById("progress");
+
+function showQuestion() {
+  quizEl.innerHTML = "";
+  progressEl.style.width = `${(current / questions.length) * 100}%`;
+  
+  const q = questions[current];
+  const div = document.createElement("div");
+  div.className = "question-box";
+  div.innerHTML = `<h2>Q${current+1}｜${q.q}</h2>`;
+  
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt[0];
+    btn.onclick = () => {
+      score[opt[1]]++;
+      current++;
+      current < questions.length ? showQuestion() : showResult();
+    };
+    div.appendChild(btn);
+  });
+  quizEl.appendChild(div);
+}
+
+function showResult() {
+  progressEl.parentElement.style.display = "none";
+  quizEl.style.display = "none";
+  resultEl.style.display = "block";
+  const top = Object.keys(score).reduce((a,b)=>score[a]>score[b]?a:b);
+  const r = results[top];
+  resultEl.innerHTML = `
+    <h2>${r.title}</h2>
+    <p>${r.text}</p>
+    <div class="hint">✨ ${r.hint}</div>
+    <button class="option" style="margin-top:20px; text-align:center;" onclick="location.reload()">再測一次</button>
+  `;
+}
+
+showQuestion();
+</script>
+</body>
+</html>
